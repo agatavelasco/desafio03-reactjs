@@ -1,4 +1,8 @@
-
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 :root {
   --heading: #F8F8F8;
@@ -26,7 +30,7 @@ body {
   color: var(--body);
 }
 
-body, input, textarea, select, button {
+body, input, textarea, select {
   font: 400 1rem "Inter", sans-serif;
 }
 

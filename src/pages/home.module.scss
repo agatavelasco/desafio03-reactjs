@@ -4,26 +4,36 @@
   padding: 0;
   height: calc(100vh - 5rem);
   
-
   display: list-item;
   align-items: center;
   justify-content: space-between;
+  text-align: justify;
+  text-decoration: none;
 
   font-weight: 400;
   font-size: 18px;
 
   strong {
     font-weight: 700;
-    size: 18px;
-    font-size: 1.5rem;
+    font-size: 28px;
+  }
+
+  p {
+    margin-top: 1rem;
+    line-height: 1.625rem;
+    margin-bottom: 2rem;
   }
   
-  .loadMore {
-    color: var(--highlight);
-    font-weight: 600;
-    font-size: 18px;
-    font-style: normal;
-    line-height: 22px;
-    top: 20px;
-  }
+}
+
+.loadMore {
+  position: relative;
+  color: var(--highlight);
+  font-weight: 600;
+  font-size: 18px;
+  font-style: normal;
+  line-height: 22px;
+
+  margin-top: 3rem;
+  
 }

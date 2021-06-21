@@ -2,7 +2,6 @@ import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Prismic from '@prismicio/client';
 import { getPrismicClient } from '../services/prismic';
-import Link from 'next/link';
 import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
 
@@ -35,7 +34,7 @@ export default function Home({ posts }: HomeProps) {
 
             <a key={post.slug} href="#">
               <strong>{post.title}</strong>
-            <p>{post.subtitle}</p>
+              <p>{post.subtitle}</p>
             </a>
           ))}
 
