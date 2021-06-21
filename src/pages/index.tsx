@@ -4,12 +4,16 @@ import Prismic from '@prismicio/client';
 import { getPrismicClient } from '../services/prismic';
 import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
+import { FiCalendar, FiUser } from "react-icons/fi";
+import { format, toDate } from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR';
 
 type Posts = {
   slug: string;
   title: string;
   subtitle: string;
   author: string;
+  updatedAt: string;
 };
 
 
@@ -35,6 +39,10 @@ export default function Home({ posts }: HomeProps) {
             <a key={post.slug} href="#">
               <strong>{post.title}</strong>
               <p>{post.subtitle}</p>
+              <p>
+                <FiCalendar /> {post.updatedAt} 
+                <FiUser /> {post.author} 
+              </p>
             </a>
           ))}
 
@@ -67,8 +75,13 @@ export const getStaticProps : GetStaticProps = async () => {
       title: posts.data.title,
       subtitle: posts.data.subtitle,
       author: posts.data.author,
+      updatedAt: format( new Date(posts.last_publication_date), 'PP',
+        {
+          locale: ptBR,
+        })
+      }
     }
-  });
+  );
 
   return {
     props: {
