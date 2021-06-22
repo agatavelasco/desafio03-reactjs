@@ -30,9 +30,7 @@ interface PostProps {
 export default function Post({ post }: PostProps) {
   return (
     <>
-      <Head>
-        <title>{post.data.title} | spacetraveling </title>
-      </Head>
+      
       <main className={commonStyles.container}>
         <article className={styles.postContent}>
         <strong>{post.data.title}</strong>
@@ -45,21 +43,22 @@ export default function Post({ post }: PostProps) {
 
 }
 
-/*
+
 export const getStaticPaths = async () => {
 
   return {
-    paths: []
+    paths: [],
+    fallback: 'blocking'
   }
 
-  
+  /*
   const prismic = getPrismicClient();
   const posts = await prismic.query(TODO);
 
  // TODO
- 
+ */
 };
-*/
+
 
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
