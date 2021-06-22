@@ -5,8 +5,9 @@ import { getPrismicClient } from '../services/prismic';
 import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
 import { FiCalendar, FiUser } from "react-icons/fi";
-import { format, toDate } from 'date-fns';
+import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
+import Link from 'next/link';
 
 type Posts = {
   slug: string;
@@ -36,14 +37,16 @@ export default function Home({ posts }: HomeProps) {
         <div className={styles.contentContainer}>
           {posts.map(post => (
 
-            <a key={post.slug} href="#">
-              <strong>{post.title}</strong>
-              <p>{post.subtitle}</p>
-              <p>
-                <FiCalendar /> {post.updatedAt} 
-                <FiUser /> {post.author} 
-              </p>
-            </a>
+            <Link href={`/post/${post.slug}`}>
+              <a key={post.slug}>
+                <strong>{post.title}</strong>
+                <p>{post.subtitle}</p>
+                <p className={styles.fiUser}>
+                  <FiCalendar /> {post.updatedAt} 
+                  <FiUser /> {post.author} 
+                </p>
+              </a>
+            </Link>
           ))}
 
             <p>
@@ -64,7 +67,7 @@ export const getStaticProps : GetStaticProps = async () => {
     Prismic.Predicates.at('document.type', 'posts')
   ], {
     fetch: ['posts.title', 'posts.subtitle', 'posts.author'],
-    pageSize: 10,
+    pageSize: 2,
   });
 
   console.log(JSON.stringify(postsResponse, null, 2));

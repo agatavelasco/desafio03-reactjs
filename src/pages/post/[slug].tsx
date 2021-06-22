@@ -1,4 +1,5 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
+import { Head } from 'next/document';
 
 import { getPrismicClient } from '../../services/prismic';
 
@@ -26,20 +27,63 @@ interface PostProps {
   post: Post;
 }
 
-export default function Post() {
+export default function Post({ post }: PostProps) {
+  return (
+    <>
+      <Head>
+        <title>{post.data.title} | spacetraveling </title>
+      </Head>
+      <main className={commonStyles.container}>
+        <article className={styles.postContent}>
+        <strong>{post.data.title}</strong>
+        <p>{post.data.content}</p>
+
+        </article>
+      </main>
+    </>
+  )
 
 }
 
-// export const getStaticPaths = async () => {
-//   const prismic = getPrismicClient();
-//   const posts = await prismic.query(TODO);
+/*
+export const getStaticPaths = async () => {
 
-//   // TODO
-// };
+  return {
+    paths: []
+  }
 
-// export const getStaticProps = async context => {
-//   const prismic = getPrismicClient();
-//   const response = await prismic.getByUID(TODO);
+  
+  const prismic = getPrismicClient();
+  const posts = await prismic.query(TODO);
 
-//   // TODO
-// };
+ // TODO
+ 
+};
+*/
+
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const { slug } = params;
+
+  const prismic = getPrismicClient();
+
+  const response = await prismic.getByUID('posts', String(slug), {});
+
+  const post = {
+    first_publication_date: response.first_publication_date,
+    title: response.data.title,
+    banner: response.data.banner,
+    author: response.data.author,
+    content: response.data.content,
+    }
+
+    return {
+      props: {
+        post,
+      }
+    }
+
+  }
+
+
+ 
