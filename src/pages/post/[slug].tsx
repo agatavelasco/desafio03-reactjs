@@ -33,7 +33,7 @@ export default function Post({ post }: PostProps) {
   return (
     <>
       <Head>
-        <title>Titulo do post </title>
+        <title>{post.data.title}</title>
       </Head>
       <main className={commonStyles.container}>
         <article className={styles.postContent}>
@@ -73,19 +73,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const response = await prismic.getByUID('posts', String(slug), {});
 
   const post = {
-      slug,
-      first_publication_date: format( new Date(response.first_publication_date), 'PP',
-        {
-          locale: ptBR,
-        }),
+      uid: response.uid,
+      first_publication_date: response.first_publication_date,
+      ...response,
         data: {
-          title: response.data.title,
-          banner: response.data.url,
-          author: response.data.author,
-        },
-        content: {
-          heading: response.data.content.heading,
-          body: response.data.content.body
+          ...response.data
         }
       
       }
