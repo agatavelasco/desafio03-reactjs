@@ -13,7 +13,7 @@ interface Post {
   uid?: string;
   first_publication_date: string | null;
   data : {
-    title: string;
+    title: string;  
     subtitle: string;
     author: string;
   }

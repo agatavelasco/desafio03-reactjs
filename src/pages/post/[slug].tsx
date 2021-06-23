@@ -7,6 +7,7 @@ import { getPrismicClient } from '../../services/prismic';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
 
+
 interface Post {
   first_publication_date: string | null;
   data: {
@@ -31,7 +32,9 @@ interface PostProps {
 export default function Post({ post }: PostProps) {
   return (
     <>
-      
+      <Head>
+        <title>Titulo do post </title>
+      </Head>
       <main className={commonStyles.container}>
         <article className={styles.postContent}>
         <strong>{post.data.title}</strong>
@@ -67,26 +70,30 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const prismic = getPrismicClient();
 
-  const post = await prismic.getByUID('posts', String(slug), {});
+  const response = await prismic.getByUID('posts', String(slug), {});
 
-  const posts = {
+  const post = {
       slug,
-      first_publication_date: format( new Date(post.first_publication_date), 'PP',
+      first_publication_date: format( new Date(response.first_publication_date), 'PP',
         {
           locale: ptBR,
         }),
-      data: {
-        title: post.data.title,
-        subtitle: post.data.subtitle,
-        author: post.data.author
-      },
+        data: {
+          title: response.data.title,
+          banner: response.data.url,
+          author: response.data.author,
+        },
+        content: {
+          heading: response.data.content.heading,
+          body: response.data.content.body
+        }
       
       }
     
 
     return {
       props: {
-        posts,
+        post,
       }
     }
 
