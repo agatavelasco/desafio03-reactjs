@@ -1,6 +1,7 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { Head } from 'next/document';
-
+import { format } from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR';
 import { getPrismicClient } from '../../services/prismic';
 
 import commonStyles from '../../styles/common.module.scss';
@@ -66,23 +67,31 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const prismic = getPrismicClient();
 
-  const response = await prismic.getByUID('posts', String(slug), {});
+  const post = await prismic.getByUID('posts', String(slug), {});
 
-  const post = {
-    first_publication_date: response.first_publication_date,
-    title: response.data.title,
-    banner: response.data.banner,
-    author: response.data.author,
-    content: response.data.content,
-    }
+  const posts = {
+      slug,
+      first_publication_date: format( new Date(post.first_publication_date), 'PP',
+        {
+          locale: ptBR,
+        }),
+      data: {
+        title: post.data.title,
+        subtitle: post.data.subtitle,
+        author: post.data.author
+      },
+      
+      }
+    
 
     return {
       props: {
-        post,
+        posts,
       }
     }
 
   }
+
 
 
  

@@ -9,22 +9,24 @@ import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import Link from 'next/link';
 
-type Posts = {
-  slug: string;
-  title: string;
-  subtitle: string;
-  author: string;
-  updatedAt: string;
+interface Post {
+  uid?: string;
+  first_publication_date: string | null;
+  data : {
+    title: string;
+    subtitle: string;
+    author: string;
+  }
 };
 
 
 interface PostPagination {
   next_page: string;
-  results: Posts[];
+  results: Post[];
 }
 
 interface HomeProps {
-  posts: Posts[]; 
+  posts: Post[]; 
 }
 
 export default function Home({ posts }: HomeProps) {
@@ -37,13 +39,13 @@ export default function Home({ posts }: HomeProps) {
         <div className={styles.contentContainer}>
           {posts.map(post => (
 
-            <Link href={`/post/${post.slug}`}>
-              <a key={post.slug}>
-                <strong>{post.title}</strong>
-                <p>{post.subtitle}</p>
+            <Link href={`/post/${post.uid}`}>
+              <a key={post.uid}>
+                <strong>{post.data.title}</strong>
+                <p>{post.data.subtitle}</p>
                 <p className={styles.fiUser}>
-                  <FiCalendar /> {post.updatedAt} 
-                  <FiUser /> {post.author} 
+                  <FiCalendar /> {post.first_publication_date} 
+                  <FiUser /> {post.data.author} 
                 </p>
               </a>
             </Link>
@@ -75,10 +77,12 @@ export const getStaticProps : GetStaticProps = async () => {
   const posts = postsResponse.results.map(posts => {
     return {
       slug: posts.uid,
-      title: posts.data.title,
-      subtitle: posts.data.subtitle,
-      author: posts.data.author,
-      updatedAt: format( new Date(posts.last_publication_date), 'PP',
+      data: {
+        title: posts.data.title,
+        subtitle: posts.data.subtitle,
+        author: posts.data.author
+      },
+      first_publication_date: format( new Date(posts.first_publication_date), 'PP',
         {
           locale: ptBR,
         })
