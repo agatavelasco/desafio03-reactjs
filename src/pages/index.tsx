@@ -10,7 +10,7 @@ import ptBR from 'date-fns/locale/pt-BR';
 import Link from 'next/link';
 
 interface Post {
-  uid?: string;
+  slug?: string;
   first_publication_date: string | null;
   data : {
     title: string;  
@@ -30,6 +30,7 @@ interface HomeProps {
 }
 
 export default function Home({ posts }: HomeProps) {
+  
   return (
     <>
       <Head>
@@ -39,8 +40,8 @@ export default function Home({ posts }: HomeProps) {
         <div className={styles.contentContainer}>
           {posts.map(post => (
 
-            <Link href={`/post/${post.uid}`}>
-              <a key={post.uid}>
+            <Link href={`/post/${post.slug}`}>
+              <a key={post.slug}>
                 <strong>{post.data.title}</strong>
                 <p>{post.data.subtitle}</p>
                 <p>
@@ -76,9 +77,10 @@ export const getStaticProps : GetStaticProps = async () => {
     pageSize: 2,
   });
 
-  console.log(JSON.stringify(postsResponse, null, 2));
+  //console.log(JSON.stringify(postsResponse, null, 2));
 
   const posts = postsResponse.results.map(posts => {
+    
     return {
       slug: posts.uid,
       first_publication_date: posts.first_publication_date,

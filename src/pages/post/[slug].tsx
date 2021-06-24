@@ -1,12 +1,9 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
-import { Head } from 'next/document';
-import { format } from 'date-fns';
-import ptBR from 'date-fns/locale/pt-BR';
+import Head from 'next/head';
 import { getPrismicClient } from '../../services/prismic';
-
+import PrismicDOM from 'prismic-dom';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
-
 
 interface Post {
   first_publication_date: string | null;
@@ -30,67 +27,72 @@ interface PostProps {
 }
 
 export default function Post({ post }: PostProps) {
+ 
   return (
     <>
       <Head>
         <title>{post.data.title}</title>
       </Head>
-      <main className={commonStyles.container}>
-        <article className={styles.postContent}>
-        <strong>{post.data.title}</strong>
-        <p>{post.data.content}</p>
+      <main>
+        
 
-        </article>
+        <section className={commonStyles.container}>
+          <img src={post.data.banner.url} alt="banner post" />
+          <strong>{post.data.title}</strong>
+            {post.data.content.map(({ heading, body }) => (
+              <div key={heading}>
+                <h1>{heading}</h1>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: PrismicDOM.RichText.asHtml(body),
+                  }}
+                />
+              </div>
+            ))}
+          </section>
+
       </main>
     </>
-  )
-
+  );
 }
 
-
 export const getStaticPaths = async () => {
-
   return {
     paths: [],
     fallback: 'blocking'
   }
+//  const prismic = getPrismicClient();
+//  const posts = await prismic.query();
 
-  /*
-  const prismic = getPrismicClient();
-  const posts = await prismic.query(TODO);
+ };
 
- // TODO
- */
-};
-
-
-
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps =  async ({ params }) => {
   const { slug } = params;
 
   const prismic = getPrismicClient();
-
   const response = await prismic.getByUID('posts', String(slug), {});
-
+  
   const post = {
-      uid: response.uid,
-      first_publication_date: response.first_publication_date,
-      ...response,
-        data: {
-          ...response.data
-        }
-      
-      }
-    
-
-    return {
-      props: {
-        post,
-      }
+    first_publication_date: response.first_publication_date,
+    uid: response.uid,
+    data: {
+      ...response.data
+      // title: response.data.title,
+      // subtitle: response.data.subtitle,
+      // banner: response.data.banner,
+      // author: response.data.author,
+      // content: response.data.content.map(({ heading, body }) => {
+      //   return {
+      //     heading: heading,
+      //     body: body,
+      //   };
+      // }),
     }
-
   }
 
-
-
- 
+  return {
+    props: {
+      post,
+    }
+  }
+};
