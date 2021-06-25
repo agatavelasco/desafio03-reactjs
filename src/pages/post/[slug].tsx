@@ -4,7 +4,9 @@ import { getPrismicClient } from '../../services/prismic';
 import PrismicDOM from 'prismic-dom';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
-import Header from '../../components/Header';
+import { FiCalendar, FiUser, FiClock } from "react-icons/fi";
+import { format } from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR';
 
 interface Post {
   first_publication_date: string | null;
@@ -38,8 +40,22 @@ export default function Post({ post }: PostProps) {
         
       <img src={post.data.banner.url} className={styles.banner} alt="banner post" />
         <section className={commonStyles.container}>
-          
+         <div className={styles.container}>
           <strong>{post.data.title}</strong>
+          <section>
+            <span>
+              <time>
+                <FiCalendar />
+                {'  '  + format( new Date(post.first_publication_date), 'PP',
+                      {
+                        locale: ptBR,
+                      })
+                }
+              </time>
+            </span>
+            <span><FiUser /> {'  ' + post.data.author} </span>
+            <span><FiClock />{'         '} 4 min</span>
+          </section>
             {post.data.content.map(({ heading, body }) => (
               <div key={heading}>
                 <h1>{heading}</h1>
@@ -50,6 +66,7 @@ export default function Post({ post }: PostProps) {
                 />
               </div>
             ))}
+         </div>
           </section>
 
       </main>

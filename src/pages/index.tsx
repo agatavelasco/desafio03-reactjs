@@ -46,7 +46,7 @@ export default function Home({ posts }: HomeProps) {
                 <p>{post.data.subtitle}</p>
                 <p>
                   <FiCalendar /> 
-                  {format( new Date(post.first_publication_date), 'PP',
+                  {'  ' + format( new Date(post.first_publication_date), 'PP',
                     {
                       locale: ptBR,
                     })} 
