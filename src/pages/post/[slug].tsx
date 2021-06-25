@@ -4,6 +4,7 @@ import { getPrismicClient } from '../../services/prismic';
 import PrismicDOM from 'prismic-dom';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
+import Header from '../../components/Header';
 
 interface Post {
   first_publication_date: string | null;
@@ -35,9 +36,9 @@ export default function Post({ post }: PostProps) {
       </Head>
       <main>
         
-
+      <img src={post.data.banner.url} className={styles.banner} alt="banner post" />
         <section className={commonStyles.container}>
-          <img src={post.data.banner.url} alt="banner post" />
+          
           <strong>{post.data.title}</strong>
             {post.data.content.map(({ heading, body }) => (
               <div key={heading}>

@@ -1,13 +1,13 @@
 .headerContainer {
-  height: 7rem;
+  height: 6.5rem;
 }
 
 .headerContent {
+max-width: 1120px;
+height: 7rem;
+margin-left: 372px;
+padding: 0 2rem;
 
-position: absolute;
-width: 238.62px;
-height: 25.63px;
-left: 372px;
-top: 79.55px;
-
+display: flex;
+align-items: center;
 }
