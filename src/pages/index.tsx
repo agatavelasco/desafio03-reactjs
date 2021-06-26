@@ -62,7 +62,7 @@ export default function Home({ posts }: HomeProps) {
 
             <p>
               <a href="#" className={styles.loadMore}>
-                Carregar mais posts
+               <button type="button">Carregar mais posts</button> 
               </a>
             </p>
             
