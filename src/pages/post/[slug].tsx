@@ -53,8 +53,8 @@ export default function Post({ post }: PostProps) {
                 }
               </time>
             </span>
-            <span><FiUser /> {'  ' + post.data.author} </span>
-            <span><FiClock />{'         '} 4 min</span>
+            <span><FiUser /> {post.data.author} </span>
+            <span><FiClock /> 4 min</span>
           </section>
             {post.data.content.map(({ heading, body }) => (
               <div key={heading}>

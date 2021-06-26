@@ -44,14 +44,18 @@ export default function Home({ posts }: HomeProps) {
               <a key={post.slug}>
                 <strong>{post.data.title}</strong>
                 <p>{post.data.subtitle}</p>
-                <p>
-                  <FiCalendar /> 
-                  {'  ' + format( new Date(post.first_publication_date), 'PP',
+                <span>
+                  <span>
+                    <FiCalendar />
+                    {'    ' + format( new Date(post.first_publication_date), 'PP',
                     {
                       locale: ptBR,
-                    })} 
-                  <FiUser /> {post.data.author} 
-                </p>
+                    })}
+                  </span>
+                  <span>
+                    <FiUser /> {post.data.author}
+                  </span>
+                </span>
               </a>
             </Link>
           ))}
