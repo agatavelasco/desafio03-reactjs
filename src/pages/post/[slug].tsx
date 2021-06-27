@@ -2,11 +2,13 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import { getPrismicClient } from '../../services/prismic';
 import PrismicDOM from 'prismic-dom';
+import Prismic from '@prismicio/client';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
 import { FiCalendar, FiUser, FiClock } from "react-icons/fi";
 import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
+import { useRouter } from 'next/router';
 
 interface Post {
   first_publication_date: string | null;
@@ -30,7 +32,11 @@ interface PostProps {
 }
 
 export default function Post({ post }: PostProps) {
- 
+
+  const router = useRouter();
+  if (router.isFallback){
+    return <div>Carregando...</div>
+  }
   return (
     <>
       <Head>
@@ -74,14 +80,19 @@ export default function Post({ post }: PostProps) {
   );
 }
 
-export const getStaticPaths = async () => {
-  return {
-    paths: [],
-    fallback: 'blocking'
-  }
-//  const prismic = getPrismicClient();
-//  const posts = await prismic.query();
+export const getStaticPaths: GetStaticPaths = async () => {
+ 
+const prismic = getPrismicClient();
+const posts = await prismic.query([
+  Prismic.predicates.at('document.type', 'posts')
+]);
 
+const paths = posts.results.map(post => ({ params: { slug: post.uid}})); 
+
+return {
+  paths: paths,
+  fallback: true,
+}
  };
 
 export const getStaticProps: GetStaticProps =  async ({ params }) => {

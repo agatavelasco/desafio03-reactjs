@@ -39,7 +39,6 @@ export default function Home({ posts }: HomeProps) {
       <main className={commonStyles.container}>
         <div className={styles.contentContainer}>
           {posts.map(post => (
-
             <Link href={`/post/${post.slug}`} key={post.slug}>
               <a>
                 <strong>{post.data.title}</strong>
