@@ -8,6 +8,8 @@ import { FiCalendar, FiUser } from "react-icons/fi";
 import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import Link from 'next/link';
+import { useState } from 'react';
+
 
 interface Post {
   slug?: string;
@@ -30,7 +32,19 @@ interface HomeProps {
 }
 
 export default function Home({ posts }: HomeProps) {
-  
+  const [post, setPost] = useState();
+  const [nextPage, setNextPage] = useState();
+
+/*
+  async function handleLoadPosts {
+    await fetch(nextPage ? nextPage : '')
+    .then(response => response.json())
+    .then(data => {
+
+    })
+  } 
+
+*/
   return (
     <>
       <Head>
@@ -61,7 +75,10 @@ export default function Home({ posts }: HomeProps) {
 
             <p>
               <a href="#" className={styles.loadMore}>
-               <button type="button">Carregar mais posts</button> 
+               <button 
+               type="button"
+
+               >Carregar mais posts</button> 
               </a>
             </p>
             
@@ -96,9 +113,13 @@ export const getStaticProps : GetStaticProps = async () => {
     }
   );
 
+  const nextPage = {
+    next_page: postsResponse.next_page,
+  }
   return {
     props: {
-      posts
+      posts,
+      nextPage,
     }
   }
 
