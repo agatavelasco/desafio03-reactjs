@@ -31,20 +31,17 @@ interface HomeProps {
   posts: Post[]; 
 }
 
-export default function Home({ posts }: HomeProps) {
-  const [post, setPost] = useState();
-  const [nextPage, setNextPage] = useState();
+export default function Home({ results, next_page }: PostPagination) {
+  const [post, setPost] = useState(results);
+  const [nextPage, setNextPage] = useState(next_page);
 
-/*
-  async function handleLoadPosts {
-    await fetch(nextPage ? nextPage : '')
-    .then(response => response.json())
-    .then(data => {
 
-    })
+  function handleLoadPosts() {
+    console.log('ESTE É O POST', post)
+    console.log('ESTE É O NEXTPAGE', nextPage)
   } 
 
-*/
+
   return (
     <>
       <Head>
@@ -52,7 +49,7 @@ export default function Home({ posts }: HomeProps) {
       </Head>
       <main className={commonStyles.container}>
         <div className={styles.contentContainer}>
-          {posts.map(post => (
+          {results.map(post => (
             <Link href={`/post/${post.slug}`} key={post.slug}>
               <a>
                 <strong>{post.data.title}</strong>
@@ -75,10 +72,14 @@ export default function Home({ posts }: HomeProps) {
 
             <p>
               <a href="#" className={styles.loadMore}>
-               <button 
-               type="button"
-
-               >Carregar mais posts</button> 
+              {nextPage ? (
+                <button type="button" onClick={handleLoadPosts}>
+                  Carregar mais posts
+                </button> 
+              ) : (
+                ''
+              )}
+               
               </a>
             </p>
             
@@ -99,7 +100,7 @@ export const getStaticProps : GetStaticProps = async () => {
 
   //console.log(JSON.stringify(postsResponse, null, 2));
 
-  const posts = postsResponse.results.map(posts => {
+  const results = postsResponse.results.map(posts => {
     
     return {
       slug: posts.uid,
@@ -113,13 +114,14 @@ export const getStaticProps : GetStaticProps = async () => {
     }
   );
 
-  const nextPage = {
+  const next_page = {
     next_page: postsResponse.next_page,
   }
+  console.log(next_page)
   return {
     props: {
-      posts,
-      nextPage,
+      results,
+      next_page,
     }
   }
 
