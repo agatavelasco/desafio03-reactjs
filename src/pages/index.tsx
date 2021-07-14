@@ -12,7 +12,7 @@ import { useState } from 'react';
 
 
 interface Post {
-  slug?: string;
+  uid?: string;
   first_publication_date: string | null;
   data : {
     title: string;  
@@ -28,17 +28,22 @@ interface PostPagination {
 }
 
 interface HomeProps {
-  posts: Post[]; 
+  postsPagination : PostPagination;
 }
 
-export default function Home({ results, next_page }: PostPagination) {
-  const [post, setPost] = useState(results);
-  const [nextPage, setNextPage] = useState(next_page);
+export default function Home({ postsPagination }: HomeProps) {
+  const [posts, setPosts] = useState(postsPagination.results);
+  const [nextPage, setNextPage] = useState(postsPagination.next_page);
 
 
-  function handleLoadPosts() {
-    console.log('ESTE É O POST', post)
-    console.log('ESTE É O NEXTPAGE', nextPage)
+  async function handleLoadPosts() {
+    await fetch(nextPage ? nextPage : '')
+      .then(response => response.json())
+      .then(data => {
+        const formattedData = postFormatter(data);
+        setPosts([...posts, ...formattedData.results])
+        setNextPage(formattedData.next_page)
+      })
   } 
 
 
@@ -49,8 +54,8 @@ export default function Home({ results, next_page }: PostPagination) {
       </Head>
       <main className={commonStyles.container}>
         <div className={styles.contentContainer}>
-          {results.map(post => (
-            <Link href={`/post/${post.slug}`} key={post.slug}>
+          {postsPagination.results.map(post => (
+            <Link key={post.uid} href={`/post/${post.uid}`}>
               <a>
                 <strong>{post.data.title}</strong>
                 <p>{post.data.subtitle}</p>
@@ -100,29 +105,35 @@ export const getStaticProps : GetStaticProps = async () => {
 
   //console.log(JSON.stringify(postsResponse, null, 2));
 
-  const results = postsResponse.results.map(posts => {
-    
-    return {
-      slug: posts.uid,
-      first_publication_date: posts.first_publication_date,
-      data: {
-        title: posts.data.title,
-        subtitle: posts.data.subtitle,
-        author: posts.data.author
-      },
-      }
-    }
-  );
+ const postsPagination = postFormatter(postsResponse); 
 
-  const next_page = {
-    next_page: postsResponse.next_page,
-  }
-  console.log(next_page)
   return {
     props: {
-      results,
-      next_page,
+      postsPagination
     }
   }
 
 };
+
+export function postFormatter (prismicResponse : PostPagination)
+ {
+    const posts = prismicResponse.results.map(post => {
+      return {
+        slug: post.uid,
+        first_publication_date: post.first_publication_date,
+        data: {
+          title: post.data.title,
+          subtitle: post.data.subtitle,
+          author: post.data.author
+        },
+      };
+    })
+
+    const formattedData = {
+      next_page : prismicResponse.next_page,
+      results : posts
+    }
+
+    return formattedData
+    
+ }
